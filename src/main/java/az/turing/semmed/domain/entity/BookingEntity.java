@@ -1,4 +1,4 @@
-package az.turing.semmed.domain.entitiy;
+package az.turing.semmed.domain.entity;
 
 import java.util.Objects;
 
@@ -8,6 +8,9 @@ public class BookingEntity {
     private String bookerName;
     private String bookerSurname;
     private FlightEntity flight;
+
+    public BookingEntity() {
+    }
 
     public BookingEntity(long bookingId, String bookerName, String bookerSurname, FlightEntity flight) {
         this.bookingId = bookingId;
