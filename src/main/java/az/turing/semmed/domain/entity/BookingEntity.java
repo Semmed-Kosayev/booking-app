@@ -12,6 +12,12 @@ public class BookingEntity {
     public BookingEntity() {
     }
 
+    public BookingEntity(String bookerName, String bookerSurname, FlightEntity flight) {
+        this.bookerName = bookerName;
+        this.bookerSurname = bookerSurname;
+        this.flight = flight;
+    }
+
     public BookingEntity(long bookingId, String bookerName, String bookerSurname, FlightEntity flight) {
         this.bookingId = bookingId;
         this.bookerName = bookerName;
