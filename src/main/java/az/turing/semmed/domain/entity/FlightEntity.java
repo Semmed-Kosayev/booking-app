@@ -11,6 +11,13 @@ public class FlightEntity {
     private LocalDateTime departureTime;
     private int availableSeats;
 
+    public FlightEntity(String destination, String from, LocalDateTime departureTime, int availableSeats) {
+        this.destination = destination;
+        this.from = from;
+        this.departureTime = departureTime;
+        this.availableSeats = availableSeats;
+    }
+
     public FlightEntity(long flightId, String destination, String from, LocalDateTime departureTime, int availableSeats) {
         this.flightId = flightId;
         this.destination = destination;
