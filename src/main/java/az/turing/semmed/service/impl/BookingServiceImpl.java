@@ -63,8 +63,9 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public boolean cancelBooking(long bookingId) {
-        BookingEntity bookingEntity = bookingDao.getById(bookingId).orElseThrow(() ->
-                new BookingNotFoundException("Booking not found with id: " + bookingId));
+        BookingEntity bookingEntity = bookingDao.getById(bookingId)
+                .orElseThrow(() -> new BookingNotFoundException("Booking not found with id: " + bookingId));
+
         FlightEntity flight = bookingEntity.getFlight();
 
         flightDao.updateAvailableSeats(flight.getFlightId(), flight.getAvailableSeats() + 1);
