@@ -1,6 +1,6 @@
 package az.turing.semmed.service.impl;
 
-import az.turing.semmed.domain.dao.impl.FlightDatabaseDao;
+import az.turing.semmed.domain.dao.FlightDao;
 import az.turing.semmed.exception.FlightNotFoundException;
 import az.turing.semmed.mapper.FlightMapper;
 import az.turing.semmed.model.dto.FlightDto;
@@ -11,10 +11,10 @@ import java.util.List;
 
 public class FlightServiceImpl implements FlightService {
 
-    private final FlightDatabaseDao flightDao;
+    private final FlightDao flightDao;
     private final FlightMapper mapper;
 
-    public FlightServiceImpl(FlightDatabaseDao flightDao, FlightMapper mapper) {
+    public FlightServiceImpl(FlightDao flightDao, FlightMapper mapper) {
         this.flightDao = flightDao;
         this.mapper = mapper;
     }
