@@ -31,11 +31,7 @@ public class FlightController {
         return flightService.getAllFlightsWithin24Hours();
     }
 
-    public List<FlightDto> searchFlights(
-            @NotEmpty String destination,
-            @NotNull LocalDate date,
-            int numberOfPeople
-    ) {
+    public List<FlightDto> searchFlights(@NotEmpty String destination, @NotNull LocalDate date, int numberOfPeople) {
         return flightService.findFlights(destination, date, numberOfPeople);
     }
 }

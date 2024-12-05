@@ -23,6 +23,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Scanner;
 
+import static az.turing.semmed.util.ConsoleInputValidator.getValidDay;
+import static az.turing.semmed.util.ConsoleInputValidator.getValidDestination;
+import static az.turing.semmed.util.ConsoleInputValidator.getValidMonth;
+import static az.turing.semmed.util.ConsoleInputValidator.getValidPassengerName;
+import static az.turing.semmed.util.ConsoleInputValidator.getValidPassengerSurname;
+import static az.turing.semmed.util.ConsoleInputValidator.getValidTicketCount;
+import static az.turing.semmed.util.ConsoleInputValidator.getValidYear;
+
 
 public class ConsoleUtil {
 
@@ -49,7 +57,7 @@ public class ConsoleUtil {
                 scanner.nextLine();
 
                 switch (choice) {
-                    case 1 -> flightController.getAllFlightsWithin24Hours().forEach(System.out::println);
+                    case 1 -> showAllFlights();
                     case 2 -> showFlightInformation();
                     case 3 -> searchAndBookFlight();
                     case 4 -> cancelBooking();
@@ -64,6 +72,10 @@ public class ConsoleUtil {
                 System.out.println("Something went wrong. " + e.getMessage() + "\nrolling back to menu.");
             }
         }
+    }
+
+    private void showAllFlights() {
+        flightController.getAllFlightsWithin24Hours().forEach(System.out::println);
     }
 
     private void insertMockFlighIfDatabaseIsEmpty() {
@@ -97,10 +109,6 @@ public class ConsoleUtil {
                 """);
     }
 
-    private boolean isValidNameAndSurname(String name, String surname) {
-        return name.matches("[a-zA-Z]+") && surname.matches("[a-zA-Z]+");
-    }
-
     private void showFlightInformation() {
         System.out.print("Please enter flight ID: ");
         long flightId = Long.parseLong(scanner.nextLine().trim());
@@ -108,59 +116,43 @@ public class ConsoleUtil {
     }
 
     private void searchAndBookFlight() {
-        System.out.print("Please enter destination: ");
-        String destination = scanner.nextLine().trim();
+        String destination = getValidDestination();
 
         System.out.print("Please enter date\n");
-        System.out.print("Day (1-31): ");
-        int day = Integer.parseInt(scanner.nextLine().trim());
-        if (day < 1 || day > 31) {
-            throw new IllegalArgumentException("Day must be between 1 and 31");
-        }
+        int day = getValidDay();
+        int month = getValidMonth();
+        int year = getValidYear();
 
-        System.out.print("Month (1-12): ");
-        int month = Integer.parseInt(scanner.nextLine().trim());
-        if (month < 1 || month > 12) {
-            throw new IllegalArgumentException("Month must be between 1 and 12.");
-        }
-
-        System.out.print("Year (YYYY): ");
-        int year = Integer.parseInt(scanner.nextLine().trim());
-
-        System.out.print("Please enter number of people (how many tickets): ");
-        int ticketCount = Integer.parseInt(scanner.nextLine().trim());
+        int ticketCount = getValidTicketCount();
 
         List<FlightDto> flights =
                 flightController.searchFlights(destination, LocalDate.of(year, month, day), ticketCount);
+
         if (flights.isEmpty()) {
-            throw new NotFoundException("Flights with specified conditions couldn't be found.");
+            System.err.println("Flights with specified conditions couldn't be found.");
+            return;
         }
+
         flights.forEach(System.out::println);
         displayMenuOfFlightSearch();
         int choiceOfFlightSearchMenu = Integer.parseInt(scanner.nextLine().trim());
         switch (choiceOfFlightSearchMenu) {
-            case 1 -> {
-                System.out.print("Please enter flight ID: ");
-                long flightId = Long.parseLong(scanner.nextLine().trim());
-
-                for (int i = 1; i <= ticketCount; i++) {
-                    System.out.printf("Please enter passenger %d name: ", i);
-                    String passengerName = scanner.nextLine().trim();
-                    System.out.printf("Please enter passenger %d surname: ", i);
-                    String passengerSurname = scanner.nextLine().trim();
-                    if (!isValidNameAndSurname(passengerName, passengerSurname)) {
-                        System.out.println("Name and surname must only contain alphabetic characters." +
-                                " Please try again.");
-                        i--;
-                        continue;
-                    }
-
-                    bookingController.createBooking(
-                            new CreateBookingRequest(flightId, passengerName, passengerSurname)
-                    );
-                }
-            }
+            case 1 -> bookFlights(ticketCount);
             case 0 -> System.out.println("Returning back to main menu...");
+        }
+    }
+
+    private void bookFlights(int ticketCount) {
+        System.out.print("Please enter flight ID: ");
+        long flightId = Long.parseLong(scanner.nextLine().trim());
+
+        for (int i = 1; i <= ticketCount; i++) {
+            String passengerName = getValidPassengerName(i);
+            String passengerSurname = getValidPassengerSurname(i);
+
+            bookingController.createBooking(
+                    new CreateBookingRequest(flightId, passengerName, passengerSurname)
+            );
         }
     }
 
@@ -186,4 +178,3 @@ public class ConsoleUtil {
         return false;
     }
 }
-
