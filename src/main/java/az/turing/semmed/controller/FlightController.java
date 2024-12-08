@@ -32,6 +32,10 @@ public class FlightController {
     }
 
     public List<FlightDto> searchFlights(@NotEmpty String destination, @NotNull LocalDate date, int numberOfPeople) {
+        if (numberOfPeople <= 0) {
+            throw new IllegalArgumentException("Number of people cannot be negative or zero");
+        }
+
         return flightService.findFlights(destination, date, numberOfPeople);
     }
 }
