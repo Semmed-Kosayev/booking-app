@@ -31,21 +31,22 @@ public class SearchFlightServlet extends FlightServlet {
         String date = req.getParameter("date");
         String numberOfPeople = req.getParameter("numberOfPeople");
 
-        if (destination == null || date == null || numberOfPeople == null) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            outputStream.write(objectMapper.writeValueAsBytes("Parameters cannot be null"));
-            return;
-        }
-
-        if (destination.isEmpty() || date.isEmpty() || numberOfPeople.isEmpty()) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            outputStream.write(objectMapper.writeValueAsBytes("Parameters cannot be empty"));
-            return;
-        }
-
-        LocalDate parsedDate;
-        int parsedNumberOfPeople;
         try {
+            if (destination == null || date == null || numberOfPeople == null) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                outputStream.write(objectMapper.writeValueAsBytes("Parameters cannot be null"));
+                return;
+            }
+
+            if (destination.isEmpty() || date.isEmpty() || numberOfPeople.isEmpty()) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                outputStream.write(objectMapper.writeValueAsBytes("Parameters cannot be empty"));
+                return;
+            }
+
+            LocalDate parsedDate;
+            int parsedNumberOfPeople;
+
             parsedDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy/MM/dd"));
             parsedNumberOfPeople = Integer.parseInt(numberOfPeople);
             List<FlightDto> searchedFlights = flightController.searchFlights(destination, parsedDate, parsedNumberOfPeople);
