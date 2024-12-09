@@ -1,9 +1,9 @@
 package az.turing.semmed.servlet.flight;
 
-import az.turing.semmed.controller.FlightController;
 import az.turing.semmed.model.dto.FlightDto;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import az.turing.semmed.util.DependencyInjector;
 import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -13,13 +13,12 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
-import static az.turing.semmed.util.ConsoleInputValidator.isAlphabeticOnly;
-
+@WebServlet(name = "searchFlightServlet", urlPatterns = "/flights/search")
 public class SearchFlightServlet extends FlightServlet {
 
-    public SearchFlightServlet(FlightController flightController, ObjectMapper objectMapper) {
-        this.flightController = flightController;
-        this.objectMapper = objectMapper;
+    public SearchFlightServlet() {
+        this.flightController = DependencyInjector.getFlightController();
+        this.objectMapper = DependencyInjector.getObjectMapper();
     }
 
     @Override

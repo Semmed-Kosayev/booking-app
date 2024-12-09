@@ -1,21 +1,22 @@
 package az.turing.semmed.servlet.booking;
 
-import az.turing.semmed.controller.BookingController;
 import az.turing.semmed.exception.BookingNotFoundException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import az.turing.semmed.util.DependencyInjector;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 
+@WebServlet(name = "cancelBookingServlet", urlPatterns = "/bookings/*")
 public class CancelBookingServlet extends BookingServlet {
 
-    public CancelBookingServlet(BookingController bookingController, ObjectMapper objectMapper) {
-        this.bookingController = bookingController;
-        this.objectMapper = objectMapper;
+    public CancelBookingServlet() {
+        this.bookingController = DependencyInjector.getBookingController();
+        this.objectMapper = DependencyInjector.getObjectMapper();
     }
 
     @Override

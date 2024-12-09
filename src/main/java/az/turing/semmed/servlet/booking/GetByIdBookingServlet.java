@@ -1,21 +1,22 @@
 package az.turing.semmed.servlet.booking;
 
-import az.turing.semmed.controller.BookingController;
 import az.turing.semmed.exception.BookingNotFoundException;
 import az.turing.semmed.model.dto.BookingDto;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import az.turing.semmed.util.DependencyInjector;
 import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 
+@WebServlet(name = "getByIdBookingServlet", urlPatterns = "/bookings/*")
 public class GetByIdBookingServlet extends BookingServlet {
 
-    public GetByIdBookingServlet(BookingController bookingController, ObjectMapper objectMapper) {
-        this.bookingController = bookingController;
-        this.objectMapper = objectMapper;
+    public GetByIdBookingServlet() {
+        this.bookingController = DependencyInjector.getBookingController();
+        this.objectMapper = DependencyInjector.getObjectMapper();
     }
 
     @Override

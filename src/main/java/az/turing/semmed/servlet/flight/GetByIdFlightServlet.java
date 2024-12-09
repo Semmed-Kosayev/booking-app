@@ -1,21 +1,22 @@
 package az.turing.semmed.servlet.flight;
 
-import az.turing.semmed.controller.FlightController;
 import az.turing.semmed.exception.FlightNotFoundException;
 import az.turing.semmed.model.dto.FlightDto;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import az.turing.semmed.util.DependencyInjector;
 import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 
+@WebServlet(name = "getByIdFlightServlet", urlPatterns = "/flights/*")
 public class GetByIdFlightServlet extends FlightServlet {
 
-    public GetByIdFlightServlet(FlightController flightController, ObjectMapper objectMapper) {
-        this.flightController = flightController;
-        this.objectMapper = objectMapper;
+    public GetByIdFlightServlet() {
+        this.flightController = DependencyInjector.getFlightController();
+        this.objectMapper = DependencyInjector.getObjectMapper();
     }
 
     @Override

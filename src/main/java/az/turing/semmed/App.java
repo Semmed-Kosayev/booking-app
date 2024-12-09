@@ -20,6 +20,7 @@ import az.turing.semmed.servlet.booking.GetByIdBookingServlet;
 import az.turing.semmed.servlet.flight.GetAllFlightServlet;
 import az.turing.semmed.servlet.flight.GetByIdFlightServlet;
 import az.turing.semmed.servlet.flight.SearchFlightServlet;
+import az.turing.semmed.util.DependencyInjector;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.catalina.Context;
@@ -41,67 +42,15 @@ public class App {
         final BookingService bookingService = new BookingServiceImpl(bookingDao, flightDao, bookingMapper);
         final BookingController bookingController = new BookingController(bookingService);
 
+        DependencyInjector.setFlightController(flightController);
+        DependencyInjector.setBookingController(bookingController);
+        DependencyInjector.setObjectMapper(objectMapper);
+
         Tomcat server = new Tomcat();
         Connector connector = server.getConnector();
         connector.setPort(8081);
 
         Context context = server.addContext("", null);
-
-        Tomcat.addServlet(
-                context,
-                "getAllFlightServlet",
-                new GetAllFlightServlet(flightController, objectMapper)
-        );
-        context.addServletMappingDecoded("/flights", "getAllFlightServlet");
-
-        Tomcat.addServlet(
-                context,
-                "getByIdFlightServlet",
-                new GetByIdFlightServlet(flightController, objectMapper)
-        );
-        context.addServletMappingDecoded("/flights/*", "getByIdFlightServlet");
-
-        Tomcat.addServlet(
-                context,
-                "searchFlightServlet",
-                new SearchFlightServlet(flightController, objectMapper)
-        );
-        context.addServletMappingDecoded("/flights/search", "searchFlightServlet");
-
-        Tomcat.addServlet(
-                context,
-                "getAllBookingServlet",
-                new GetAllBookingServlet(bookingController, objectMapper)
-        );
-        context.addServletMappingDecoded("/bookings", "getAllBookingServlet");
-
-        Tomcat.addServlet(
-                context,
-                "getByIdBookingServlet",
-                new GetByIdBookingServlet(bookingController, objectMapper)
-        );
-        context.addServletMappingDecoded("/bookings/*", "getByIdBookingServlet");
-
-        Tomcat.addServlet(
-                context,
-                "getAllByPassengerBookingServlet",
-                new GetAllByPassengerBookingServlet(bookingController, objectMapper)
-        );
-        context.addServletMappingDecoded("/bookings/by-passenger-name/*", "getAllByPassengerBookingServlet");
-
-        Tomcat.addServlet(
-                context,
-                "createBookingServlet",
-                new CreateBookingServlet(bookingController, objectMapper)
-        );
-        context.addServletMappingDecoded("/bookings/create", "createBookingServlet");
-
-        Tomcat.addServlet(
-                context,
-                "cancelBookingServlet",
-                new CancelBookingServlet(bookingController, objectMapper)
-        );
-        context.addServletMappingDecoded("/bookings/*", "cancelBookingServlet");
 
         server.start();
     }

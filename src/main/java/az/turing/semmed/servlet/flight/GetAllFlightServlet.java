@@ -1,20 +1,21 @@
 package az.turing.semmed.servlet.flight;
 
-import az.turing.semmed.controller.FlightController;
 import az.turing.semmed.model.dto.FlightDto;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import az.turing.semmed.util.DependencyInjector;
 import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.util.List;
 
+@WebServlet(name = "getAllFlightServlet", urlPatterns = "/flights")
 public class GetAllFlightServlet extends FlightServlet {
 
-    public GetAllFlightServlet(FlightController flightController, ObjectMapper objectMapper) {
-        this.flightController = flightController;
-        this.objectMapper = objectMapper;
+    public GetAllFlightServlet() {
+        this.flightController = DependencyInjector.getFlightController();
+        this.objectMapper = DependencyInjector.getObjectMapper();
     }
 
     @Override
