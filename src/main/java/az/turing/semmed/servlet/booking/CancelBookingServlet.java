@@ -15,7 +15,7 @@ import java.io.PrintWriter;
 public class CancelBookingServlet extends BookingServlet {
 
     public CancelBookingServlet() {
-        this.bookingController = DependencyInjector.getBookingController();
+        this.bookingService = DependencyInjector.getBookingService();
         this.objectMapper = DependencyInjector.getObjectMapper();
     }
 
@@ -36,7 +36,10 @@ public class CancelBookingServlet extends BookingServlet {
         ServletOutputStream outputStream = resp.getOutputStream();
         try {
             long id = Long.parseLong(path.substring(1));
-            bookingController.cancelBooking(id);
+            if (id <= 0) {
+                throw new IllegalArgumentException("ID of the booking can not be negative or zero");
+            }
+            bookingService.cancelBooking(id);
             resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
         } catch (NumberFormatException e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);

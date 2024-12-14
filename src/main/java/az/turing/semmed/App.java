@@ -42,8 +42,8 @@ public class App {
         final BookingService bookingService = new BookingServiceImpl(bookingDao, flightDao, bookingMapper);
         final BookingController bookingController = new BookingController(bookingService);
 
-        DependencyInjector.setFlightController(flightController);
-        DependencyInjector.setBookingController(bookingController);
+        DependencyInjector.setFlightService(flightService);
+        DependencyInjector.setBookingService(bookingService);
         DependencyInjector.setObjectMapper(objectMapper);
 
         Tomcat server = new Tomcat();
@@ -51,6 +51,62 @@ public class App {
         connector.setPort(8081);
 
         Context context = server.addContext("", null);
+
+        Tomcat.addServlet(
+                context,
+                "getAllFlightServlet",
+                new GetAllFlightServlet()
+        );
+        context.addServletMappingDecoded("/flights", "getAllFlightServlet");
+
+        Tomcat.addServlet(
+                context,
+                "getByIdFlightServlet",
+                new GetByIdFlightServlet()
+        );
+        context.addServletMappingDecoded("/flights/*", "getByIdFlightServlet");
+
+        Tomcat.addServlet(
+                context,
+                "searchFlightServlet",
+                new SearchFlightServlet()
+        );
+        context.addServletMappingDecoded("/flights/search", "searchFlightServlet");
+
+        Tomcat.addServlet(
+                context,
+                "getAllBookingServlet",
+                new GetAllBookingServlet()
+        );
+        context.addServletMappingDecoded("/bookings", "getAllBookingServlet");
+
+        Tomcat.addServlet(
+                context,
+                "getByIdBookingServlet",
+                new GetByIdBookingServlet()
+        );
+        context.addServletMappingDecoded("/bookings/*", "getByIdBookingServlet");
+
+        Tomcat.addServlet(
+                context,
+                "getAllByPassengerBookingServlet",
+                new GetAllByPassengerBookingServlet()
+        );
+        context.addServletMappingDecoded("/bookings/by-passenger-name/*", "getAllByPassengerBookingServlet");
+
+        Tomcat.addServlet(
+                context,
+                "createBookingServlet",
+                new CreateBookingServlet()
+        );
+        context.addServletMappingDecoded("/bookings/create", "createBookingServlet");
+
+        Tomcat.addServlet(
+                context,
+                "cancelBookingServlet",
+                new CancelBookingServlet()
+        );
+        context.addServletMappingDecoded("/bookings/*", "cancelBookingServlet");
 
         server.start();
     }

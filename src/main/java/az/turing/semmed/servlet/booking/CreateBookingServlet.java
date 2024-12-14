@@ -19,7 +19,7 @@ import java.io.PrintWriter;
 public class CreateBookingServlet extends BookingServlet {
 
     public CreateBookingServlet() {
-        this.bookingController = DependencyInjector.getBookingController();
+        this.bookingService = DependencyInjector.getBookingService();
         this.objectMapper = DependencyInjector.getObjectMapper();
     }
 
@@ -48,15 +48,27 @@ public class CreateBookingServlet extends BookingServlet {
         try {
             CreateBookingRequest createBookingRequest = objectMapper.readValue(bookingToCreate, CreateBookingRequest.class);
 
+            final long flightId = createBookingRequest.flightId();
+            final String name = createBookingRequest.bookerName();
+            final String surname = createBookingRequest.bookerSurname();
+
             if (
-                    createBookingRequest.bookerName() == null ||
-                            createBookingRequest.bookerSurname() == null ||
-                            createBookingRequest.flightId() == 0
+                    name == null ||
+                            surname == null ||
+                            flightId == 0
             ) {
                 throw new IllegalArgumentException("Invalid object structure: Missing object fields");
             }
 
-            BookingDto createdBooking = bookingController.createBooking(createBookingRequest);
+            if (flightId <= 0) {
+                throw new IllegalArgumentException("ID of the flight can not be negative or zero");
+            }
+
+            if (name.isEmpty() || surname.isEmpty()) {
+                throw new IllegalArgumentException("name or surname cannot be empty");
+            }
+
+            BookingDto createdBooking = bookingService.createBooking(createBookingRequest);
             resp.setStatus(HttpServletResponse.SC_CREATED);
             outputStream.write(objectMapper.writeValueAsBytes(createdBooking));
         } catch (FlightNotFoundException | IllegalArgumentException e) {

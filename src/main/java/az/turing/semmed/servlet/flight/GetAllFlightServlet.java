@@ -14,7 +14,7 @@ import java.util.List;
 public class GetAllFlightServlet extends FlightServlet {
 
     public GetAllFlightServlet() {
-        this.flightController = DependencyInjector.getFlightController();
+        this.flightService = DependencyInjector.getFlightService();
         this.objectMapper = DependencyInjector.getObjectMapper();
     }
 
@@ -26,16 +26,16 @@ public class GetAllFlightServlet extends FlightServlet {
             resp.setContentType("application/json");
 
             if (isWithin24hours != null && String.valueOf(isWithin24hours).equalsIgnoreCase("true")) {
-                List<FlightDto> allFlightsWithin24Hours = flightController.getAllFlightsWithin24Hours();
+                List<FlightDto> allFlightsWithin24Hours = flightService.getAllFlightsWithin24Hours();
                 outputStream.write(objectMapper.writeValueAsBytes(allFlightsWithin24Hours));
                 return;
             }
 
-            List<FlightDto> allFlights = flightController.getAllFlights();
+            List<FlightDto> allFlights = flightService.getAllFlights();
             outputStream.write(objectMapper.writeValueAsBytes(allFlights));
 
         } catch (ClassCastException e) {
-            List<FlightDto> allFlights = flightController.getAllFlights();
+            List<FlightDto> allFlights = flightService.getAllFlights();
             outputStream.write(objectMapper.writeValueAsBytes(allFlights));
         } finally {
             outputStream.close();

@@ -15,7 +15,7 @@ import java.io.PrintWriter;
 public class GetByIdFlightServlet extends FlightServlet {
 
     public GetByIdFlightServlet() {
-        this.flightController = DependencyInjector.getFlightController();
+        this.flightService = DependencyInjector.getFlightService();
         this.objectMapper = DependencyInjector.getObjectMapper();
     }
 
@@ -34,7 +34,10 @@ public class GetByIdFlightServlet extends FlightServlet {
         ServletOutputStream outputStream = resp.getOutputStream();
         try {
             long id = Long.parseLong(path.substring(1));
-            FlightDto flightById = flightController.getFlightById(id);
+            if (id <= 0) {
+                throw new IllegalArgumentException("ID of the flight can not be negative or zero");
+            }
+            FlightDto flightById = flightService.getFlightById(id);
             outputStream.write(objectMapper.writeValueAsBytes(flightById));
             resp.setStatus(HttpServletResponse.SC_OK);
         } catch (NumberFormatException e) {

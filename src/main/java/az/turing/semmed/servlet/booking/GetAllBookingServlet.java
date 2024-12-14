@@ -14,7 +14,7 @@ import java.util.List;
 public class GetAllBookingServlet extends BookingServlet {
 
     public GetAllBookingServlet() {
-        this.bookingController = DependencyInjector.getBookingController();
+        this.bookingService = DependencyInjector.getBookingService();
         this.objectMapper = DependencyInjector.getObjectMapper();
     }
 
@@ -22,7 +22,7 @@ public class GetAllBookingServlet extends BookingServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try (ServletOutputStream outputStream = resp.getOutputStream()) {
             resp.setContentType("application/json");
-            List<BookingDto> allBookings = bookingController.getAllBookings();
+            List<BookingDto> allBookings = bookingService.getAllBookings();
             outputStream.write(objectMapper.writeValueAsBytes(allBookings));
         }
     }

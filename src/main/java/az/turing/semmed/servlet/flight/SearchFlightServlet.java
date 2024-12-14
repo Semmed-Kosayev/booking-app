@@ -17,7 +17,7 @@ import java.util.List;
 public class SearchFlightServlet extends FlightServlet {
 
     public SearchFlightServlet() {
-        this.flightController = DependencyInjector.getFlightController();
+        this.flightService = DependencyInjector.getFlightService();
         this.objectMapper = DependencyInjector.getObjectMapper();
     }
 
@@ -48,7 +48,12 @@ public class SearchFlightServlet extends FlightServlet {
 
             parsedDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy/MM/dd"));
             parsedNumberOfPeople = Integer.parseInt(numberOfPeople);
-            List<FlightDto> searchedFlights = flightController.searchFlights(destination, parsedDate, parsedNumberOfPeople);
+
+            if (parsedNumberOfPeople <= 0) {
+                throw new IllegalArgumentException("Number of people cannot be negative or zero");
+            }
+
+            List<FlightDto> searchedFlights = flightService.findFlights(destination, parsedDate, parsedNumberOfPeople);
             outputStream.write(objectMapper.writeValueAsBytes(searchedFlights));
         } catch (DateTimeParseException | NumberFormatException e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);

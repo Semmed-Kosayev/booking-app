@@ -42,7 +42,7 @@ public class GetAllByPassengerBookingServlet extends BookingServlet {
                 return;
             }
 
-            List<BookingDto> allBookingsByPassenger = bookingController.findAllBookingsByPassenger(fullname);
+            List<BookingDto> allBookingsByPassenger = bookingService.findAllBookingByPassenger(fullname);
             outputStream.write(objectMapper.writeValueAsBytes(allBookingsByPassenger));
         }
     }
